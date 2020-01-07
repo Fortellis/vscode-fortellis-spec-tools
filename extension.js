@@ -9,6 +9,11 @@ function activate(context) {
     validateSpec
   );
 
+  const previewAction = vscode.commands.registerTextEditorCommand(
+    "extension.previewSpec",
+    previewSpec
+  );
+
   context.subscriptions.push(validateAction);
   context.subscriptions.push(diagnosticCollection);
 }
@@ -24,6 +29,16 @@ function validateSpec(editor) {
     .catch(err => {
       vscode.window.showInformationMessage(err);
     });
+}
+
+function previewSpec(editor) {
+  const document = editor.document;
+  const panel = vscode.window.createWebviewPanel(
+    "specPreview",
+    document.fileName,
+    vscode.ViewColumn.Beside,
+    {}
+  );
 }
 
 // this method is called when your extension is deactivated

@@ -19,7 +19,12 @@
       {
         "command": "extension.validateSpec",
         "title": "Validate",
-        "category": "Fortellis Spec Validator"
+        "category": "Fortellis Spec"
+      },
+      {
+          "command": "extension.previewSpec",
+          "title": "Preview",
+          "category": "Fortellis Spec"
       }
     ],
     "menus": {
