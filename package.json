@@ -3,7 +3,7 @@
     "displayName": "Fortellis Spec Validator",
     "description": "Validate fortellis specifications live in your editor.",
     "version": "0.0.1",
-    "publisher": "jaredkent",
+    "publisher": "fortellis",
     "engines": {
         "vscode": "^1.41.0"
     },
