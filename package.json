@@ -11,7 +11,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:extension.validateSpec"
+    "onLanguage:yaml"
   ],
   "main": "./extension",
   "contributes": {

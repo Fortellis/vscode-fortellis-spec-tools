@@ -1,32 +1,40 @@
-const vscode = require("vscode");
-const validate = require("@fortellis/spec-validator");
+const vscode = require('vscode');
+const validate = require('@fortellis/spec-validator');
 
 const diagnosticCollection = vscode.languages.createDiagnosticCollection();
 
-let timeout = undefined;
-
 function activate(context) {
   const validateAction = vscode.commands.registerTextEditorCommand(
-    "extension.validateSpec",
+    'extension.validateSpec',
     validateSpec
   );
 
-  vscode.workspace.onDidChangeTextDocument(event => {
-    if (vscode.window.activeTextEditor && event.document === vscode.window.activeTextEditor.document) {
-        triggerValidateSpec();
+  let timeout = undefined;
+
+  let triggerValidateSpec = (editor) => {
+    console.log('validate triggered');
+    if (timeout) {
+      clearTimeout(timeout);
+      timeout = undefined;
     }
-  }, null, context.subscriptions);
+    timeout = setTimeout(() => {validateSpec(editor);}, 500);
+  };
+
+  vscode.workspace.onDidChangeTextDocument(
+    event => {
+      if (
+        vscode.window.activeTextEditor &&
+        event.document === vscode.window.activeTextEditor.document
+      ) {
+        triggerValidateSpec(vscode.window.activeTextEditor);
+      }
+    },
+    null,
+    context.subscriptions
+  );
 
   context.subscriptions.push(validateAction);
   context.subscriptions.push(diagnosticCollection);
-}
-
-function triggerValidateSpec() {
-    if (timeout) {
-        clearTimeout(timeout);
-        timeout = undefined;
-    }
-    timeout = setTimeout(validateSpec, 2000);
 }
 
 function validateSpec(editor) {
@@ -36,7 +44,10 @@ function validateSpec(editor) {
         return new vscode.Diagnostic(err.range, err.message);
       });
       diagnosticCollection.set(editor.document.uri, diagnostics);
-      vscode.window.showErrorMessage('Validation failed!', ...res.map((err => err.message)));
+      vscode.window.showErrorMessage(
+        'Validation failed!',
+        ...res.map(err => err.message)
+      );
     })
     .catch(err => {
       vscode.window.showInformationMessage(err);
