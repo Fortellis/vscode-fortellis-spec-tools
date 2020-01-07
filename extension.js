@@ -11,13 +11,15 @@ function activate(context) {
 
   let timeout = undefined;
 
-  let triggerValidateSpec = (editor) => {
+  let triggerValidateSpec = editor => {
     console.log('validate triggered');
     if (timeout) {
       clearTimeout(timeout);
       timeout = undefined;
     }
-    timeout = setTimeout(() => {validateSpec(editor);}, 500);
+    timeout = setTimeout(() => {
+      validateSpec(editor);
+    }, 500);
   };
 
   vscode.workspace.onDidChangeTextDocument(
@@ -44,10 +46,15 @@ function validateSpec(editor) {
         return new vscode.Diagnostic(err.range, err.message);
       });
       diagnosticCollection.set(editor.document.uri, diagnostics);
-      vscode.window.showErrorMessage(
-        'Validation failed!',
-        ...res.map(err => err.message)
-      );
+      if (res.length > 0) {
+        vscode.window.showErrorMessage(
+          'Specification invalid',
+          ...res.map(err => err.message)
+        );
+        vscode.window.setStatusBarMessage('Specification invalid', 5000);
+      } else {
+        vscode.window.setStatusBarMessage('Specification valid', 5000);
+      }
     })
     .catch(err => {
       vscode.window.showInformationMessage(err);
