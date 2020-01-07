@@ -11,15 +11,14 @@ function activate(context) {
 
   let timeout = undefined;
 
-  let triggerValidateSpec = editor => {
-    console.log('validate triggered');
+  let triggerValidateSpec = editor => {    
     if (timeout) {
       clearTimeout(timeout);
       timeout = undefined;
     }
     timeout = setTimeout(() => {
       validateSpec(editor);
-    }, 500);
+    }, 2000);
   };
 
   vscode.workspace.onDidChangeTextDocument(
@@ -46,11 +45,23 @@ function validateSpec(editor) {
         return new vscode.Diagnostic(err.range, err.message);
       });
       diagnosticCollection.set(editor.document.uri, diagnostics);
-      if (res.length > 0) {
-        vscode.window.showErrorMessage(
-          'Specification invalid',
-          ...res.map(err => err.message)
+      res.forEach(item => {
+        vscode.window.showErrorMessage(item.message, 'Go to Issue').then(
+          () => {
+            editor.selection = new vscode.Selection(
+              new vscode.Position(
+                item.range.start.line,
+                item.range.start.character
+              ),
+              new vscode.Position(item.range.end.line, item.range.end.character)
+            );
+          },
+          err => {
+            vscode.window.showInformationMessage(err);
+          }
         );
+      });
+      if (res.length > 0) {
         vscode.window.setStatusBarMessage('Specification invalid', 5000);
       } else {
         vscode.window.setStatusBarMessage('Specification valid', 5000);

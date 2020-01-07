@@ -43,6 +43,6 @@
     "@types/mocha": "^2.2.42"
   },
   "dependencies": {
-    "@fortellis/spec-validator": "^1.0.1"
+    "@fortellis/spec-validator": "^1.0.2"
   }
 }
