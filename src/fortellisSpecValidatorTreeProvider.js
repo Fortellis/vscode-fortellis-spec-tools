@@ -34,26 +34,7 @@ class FortellisSpecValidatorProvider {
 		if(element.isRoot && element.valid) icon = 'check.svg';
 
 		if(!element.isRoot || (element.isRoot && element.valid)){
-			treeItem.iconPath = {
-				light: path.join(
-					__filename,
-					'..',
-					'..',
-					'resources',
-					'icons',
-					'light',
-					icon
-				),
-				dark: path.join(
-					__filename,
-					'..',
-					'..',
-					'resources',
-					'icons',
-					'dark',
-					icon
-				)
-			};
+			treeItem.iconPath = this.getIconPath(icon);
 		}
     if (!element.isRoot) {
       treeItem.tooltip = 'Show Issue';      
@@ -71,7 +52,30 @@ class FortellisSpecValidatorProvider {
       return this.data;
     }
     return element.children;
-  }
+	}
+	
+	getIconPath(icon){
+		return {
+			light: path.join(
+				__filename,
+				'..',
+				'..',
+				'resources',
+				'icons',
+				'light',
+				icon
+			),
+			dark: path.join(
+				__filename,
+				'..',
+				'..',
+				'resources',
+				'icons',
+				'dark',
+				icon
+			)
+		}
+	}
 }
 
 module.exports = FortellisSpecValidatorProvider;
