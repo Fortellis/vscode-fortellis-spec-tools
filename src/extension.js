@@ -2,6 +2,8 @@ const vscode = require('vscode');
 const validate = require('@fortellis/spec-validator');
 
 const diagnosticCollection = vscode.languages.createDiagnosticCollection();
+const FortellisSpecValidatorTreeProvider = require('./fortellisSpecValidatorTreeProvider');
+const treeProvider = new FortellisSpecValidatorTreeProvider();
 let statusBarMessage;
 
 function activate(context) {
@@ -9,6 +11,13 @@ function activate(context) {
     'extension.validateSpec',
     validateSpec
   );
+
+  const highlightIssueAction = vscode.commands.registerTextEditorCommand(
+    'extension.highlightIssue',
+    highlighIssue
+  );
+
+  console.log('Extension activated.')
 
   let timeout = undefined;  
 
@@ -36,31 +45,30 @@ function activate(context) {
   );
 
   context.subscriptions.push(validateAction);
+  context.subscriptions.push(highlightIssueAction);
   context.subscriptions.push(diagnosticCollection);
+
+  vscode.window.registerTreeDataProvider('fortellis-spec-validator-view', treeProvider);
+}
+
+function highlighIssue(editor, edit, issue) {
+  editor.selection = new vscode.Selection(
+    new vscode.Position(
+      issue.range.start.line,
+      issue.range.start.character
+    ),
+    new vscode.Position(issue.range.end.line, issue.range.end.character)
+  );
+  editor.revealRange(issue.range, vscode.TextEditorRevealType.InCenter);
 }
 
 function validateSpec(editor) {
   validate(editor.document.getText())
     .then(res => {
       const diagnostics = res.map(errItem => {
-        //Display error message each issue with link to the issue
-        /*vscode.window.showErrorMessage(errItem.message, 'Go to Issue').then(
-          () => {
-            editor.selection = new vscode.Selection(
-              new vscode.Position(
-                errItem.range.start.line,
-                errItem.range.start.character
-              ),
-              new vscode.Position(errItem.range.end.line, errItem.range.end.character)
-            );
-          },
-          err => {
-            vscode.window.showInformationMessage(err);
-          }
-        );*/
-        // Highlight each issue in the editor
         return new vscode.Diagnostic(errItem.range, errItem.message);
       });
+      treeProvider.updateIssues(res);
       diagnosticCollection.set(editor.document.uri, diagnostics);
       if(statusBarMessage) statusBarMessage.dispose();
       if (res.length > 0) {

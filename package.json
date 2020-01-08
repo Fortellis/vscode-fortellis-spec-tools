@@ -11,22 +11,51 @@
     "Other"
   ],
   "activationEvents": [
+    "onView:fortellis-spec-validator-view",
     "onLanguage:yaml"
   ],
-  "main": "./extension",
+  "main": "./src/extension",
   "contributes": {
     "commands": [
       {
         "command": "extension.validateSpec",
         "title": "Validate",
-        "category": "Fortellis Spec Validator"
+        "category": "Fortellis Spec Validator",
+        "icon": {
+          "light": "resources/light/refresh.svg",
+          "dark": "resources/dark/refresh.svg"
+        }
       }
     ],
     "menus": {
+      "view/title": [
+        {
+          "command": "extension.validateSpec",
+          "when": "view == fortellis-spec-validator-view",
+          "group": "navigation"
+        }
+      ],
       "commandPalette": [
         {
           "command": "extension.validateSpec",
           "when": "editorLangId == yaml"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "fortellis-spec-validator",
+          "title": "Fortellis Spec Validation",
+          "icon": "media/dep.svg"
+        }
+      ]
+    },
+    "views": {
+      "fortellis-spec-validator": [
+        {
+          "id": "fortellis-spec-validator-view",
+          "name": "Fortellis Spec Validation"
         }
       ]
     }
