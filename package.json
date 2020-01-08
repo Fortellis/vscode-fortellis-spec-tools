@@ -11,7 +11,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:extension.validateSpec"
+    "onCommand:extension.validateSpec",
+    "onCommand:extension.previewSpec"
   ],
   "main": "./extension",
   "contributes": {
@@ -22,9 +23,9 @@
         "category": "Fortellis Spec"
       },
       {
-          "command": "extension.previewSpec",
-          "title": "Preview",
-          "category": "Fortellis Spec"
+        "command": "extension.previewSpec",
+        "title": "Preview",
+        "category": "Fortellis Spec"
       }
     ],
     "menus": {
@@ -48,6 +49,7 @@
     "@types/mocha": "^2.2.42"
   },
   "dependencies": {
-    "@fortellis/spec-validator": "^1.0.1"
+    "@fortellis/spec-validator": "^1.0.1",
+    "@stoplight/yaml": "^3.5.0"
   }
 }

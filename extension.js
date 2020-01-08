@@ -1,7 +1,9 @@
 const vscode = require("vscode");
 const validate = require("@fortellis/spec-validator");
+const generatePreview = require('./previewGenerator');
 
 const diagnosticCollection = vscode.languages.createDiagnosticCollection();
+let webviewPanel = undefined;
 
 function activate(context) {
   const validateAction = vscode.commands.registerTextEditorCommand(
@@ -15,6 +17,7 @@ function activate(context) {
   );
 
   context.subscriptions.push(validateAction);
+  context.subscriptions.push(previewAction);
   context.subscriptions.push(diagnosticCollection);
 }
 
@@ -33,12 +36,14 @@ function validateSpec(editor) {
 
 function previewSpec(editor) {
   const document = editor.document;
-  const panel = vscode.window.createWebviewPanel(
+  webviewPanel = vscode.window.createWebviewPanel(
     "specPreview",
     document.fileName,
     vscode.ViewColumn.Beside,
     {}
   );
+  const text = document.getText();
+  webviewPanel.webview.html = generatePreview(text);
 }
 
 // this method is called when your extension is deactivated
