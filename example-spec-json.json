@@ -1,0 +1,232 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Safety Recalls API",
+    "description": "API Endpoints for dealing with Safety Recalls",
+    "version": "0.0.1"
+  },
+  "basePath": "/2019-hackathon/v1/not-safe",
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "Get Safety Recalls",
+        "summary": "Returns a list of safety recalls for a given VIN.",
+        "description": "The returned list will only contain open Safety Recalls that are on this particular vehicle, as identified by the 'vin' query parameter.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/requestId"
+          },
+          {
+            "$ref": "#/parameters/vinParam"
+          },
+          {
+            "$ref": "#/parameters/pageParam"
+          },
+          {
+            "$ref": "#/parameters/pageSizeParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of open Safety Recalls",
+            "schema": {
+              "$ref": "#/definitions/PagedResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Server Error"
+          },
+          "503": {
+            "description": "Server Down"
+          }
+        }
+      }
+    }
+  },
+  "parameters": {
+    "requestId": {
+      "in": "header",
+      "name": "Request-Id",
+      "type": "string",
+      "required": true,
+      "description": "Id of the request"
+    },
+    "vinParam": {
+      "in": "query",
+      "name": "vin",
+      "type": "string",
+      "required": true,
+      "description": "The full 17-character Vehicle Identification Number."
+    },
+    "pageParam": {
+      "in": "query",
+      "name": "page",
+      "type": "integer",
+      "required": false,
+      "default": 1,
+      "description": "A non-zero integer representing the page of the results"
+    },
+    "pageSizeParam": {
+      "in": "query",
+      "name": "pageSize",
+      "type": "integer",
+      "required": false,
+      "default": 100,
+      "description": "A non-negative, non-zero integer indicating the maximum number of results to return at one time"
+    }
+  },
+  "definitions": {
+    "PagedResponse": {
+      "properties": {
+        "totalItems": {
+          "type": "integer"
+        },
+        "totalPages": {
+          "type": "integer"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SafetyRecall"
+          }
+        }
+      }
+    },
+    "SafetyRecall": {
+      "properties": {
+        "vin": {
+          "type": "string"
+        },
+        "nhtsaCampaignNumber": {
+          "type": "string",
+          "description": "The number assigned to this recall by the National Highway Traffic Safety Administration (NHTSA).  The first two digits are the year in which the recall was issued, followed by the recall type code, followed by a six-digit numeric identifier.",
+          "pattern": "[0-9]{2}[CEITVX]{1}[0-9]{6}"
+        },
+        "mfgCampaignNumber": {
+          "type": "string",
+          "description": "The identifier assigned to this recall by the vehicle manufacturer"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "OPEN",
+            "REPAIRED",
+            "UNKNOWN"
+          ]
+        },
+        "mfgName": {
+          "type": "string",
+          "description": "The name of the manufacturer of the defective vehicles or equipment"
+        },
+        "modelYear": {
+          "type": "string",
+          "description": "Four-digit model year of the affected vehicle;  \"9999\" if unknown or N/A",
+          "pattern": "[0-9]{4}"
+        },
+        "makeName": {
+          "type": "string",
+          "description": "The vehicle or equipment OEM name"
+        },
+        "modelName": {
+          "type": "string",
+          "description": "The vehicle or equipment model name"
+        },
+        "recallTypeCode": {
+          "type": "string",
+          "enum": [
+            "C",
+            "E",
+            "I",
+            "T",
+            "V",
+            "X"
+          ],
+          "description": "A single letter code identifying the type of recall. (Vehicle, Tire, Equipment, etc.)"
+        },
+        "fmvss": {
+          "type": "string",
+          "description": "The Federal Motor Vehicle Safety Standard (FMVSS) that is deficient because of this defect"
+        },
+        "componentDescription": {
+          "type": "string",
+          "description": "A brief description of the defective components"
+        },
+        "defectSummary": {
+          "type": "string",
+          "description": "A detailed description of the defect"
+        },
+        "consequenceSummary": {
+          "type": "string",
+          "description": "An explanation of what problems may arise due to this defect"
+        },
+        "correctiveSummary": {
+          "type": "string",
+          "description": "An explanation how to fix the defect"
+        },
+        "manufactureBeginDate": {
+          "type": "string",
+          "format": "date",
+          "description": "The beginning date of manufacture for this defect"
+        },
+        "manufactureEndDate": {
+          "type": "string",
+          "format": "date",
+          "description": "The end date of manufacture for this defect"
+        },
+        "potentialNumberAffected": {
+          "type": "integer",
+          "description": "The potential number of vehicles affected by this defect"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Notes from NHTSA relevant to this recall"
+        },
+        "recordCreationDate": {
+          "type": "string",
+          "format": "date",
+          "description": "The date NHTSA created a record for this recall.  This date may be earlier than when the recall was published to the public."
+        },
+        "ownersNotifiedDate": {
+          "type": "string",
+          "format": "date",
+          "description": "The date the vehicle or equipment manufacturer notified owners of the defect"
+        },
+        "recalledComponentId": {
+          "type": "string",
+          "description": "A number assigned by NHTSA that uniquely identifies a recalled component"
+        }
+      },
+      "example": {
+        "nhtsaCampaignNumber": "15V780000",
+        "mfgCampaignNumber": "SB-15-20-002",
+        "status": "OPEN",
+        "mfgName": "Tesla Motors, Inc.",
+        "recallTypeCode": "V",
+        "fmvss": "",
+        "componentDescription": "SEAT BELTS:FRONT",
+        "defectSummary": "Tesla Motors, Inc. (Tesla) is recalling certain model year 2012-2015 Model S vehicles manufactured May 31, 2012, to November 12, 2015.  The affected vehicles are equipped with driver or front passenger seat belts that may be improperly connected to the outboard lap pretensioner.",
+        "consequenceSummary": "If the seat belt is not correctly attached to the pretensioner, it may not properly restrain the seat occupant in the event of a crash, increasing their risk of injury.",
+        "correctiveSummary": "Tesla will notify owners, and service centers will inspect the driver and front passenger seat belts, correcting their connection, as necessary, free of charge.  The recall began on December 14, 2015.  Owners may contact Tesla customer service at 1-877-798-3752.  Tesla's number for this recall is SB-15-20-002.",
+        "manufactureBeginDate": "2012-05-31",
+        "manufactureEndDate": "2015-11-12",
+        "potentialNumberAffected": 59415,
+        "notes": "Owners may also contact the National Highway Traffic Safety Administration Vehicle Safety Hotline at 1-888-327-4236 (TTY 1-800-424-9153), or go to www.safercar.gov.",
+        "recordCreationDate": "2015-11-23",
+        "ownersNotifiedDate": "2015-12-14",
+        "recalledComponentId": 5.8286001977407e+22
+      }
+    }
+  }
+}

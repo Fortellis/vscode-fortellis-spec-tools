@@ -11,8 +11,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:extension.validateSpec",
-    "onCommand:extension.previewSpec"
+    "onLanguage:yaml"
   ],
   "main": "./extension",
   "contributes": {
@@ -33,6 +32,10 @@
         {
           "command": "extension.validateSpec",
           "when": "editorLangId == yaml"
+        },
+        {
+          "command": "extension.previewSpec",
+          "when": "editorLangId == yaml"
         }
       ]
     }
@@ -49,7 +52,8 @@
     "@types/mocha": "^2.2.42"
   },
   "dependencies": {
-    "@fortellis/spec-validator": "^1.0.1",
-    "@stoplight/yaml": "^3.5.0"
+    "@fortellis/spec-validator": "^1.0.2",
+    "@stoplight/yaml": "^3.5.0",
+    "json-schema-ref-parser": "^7.1.3"
   }
 }
