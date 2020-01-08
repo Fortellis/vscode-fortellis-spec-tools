@@ -17,10 +17,7 @@ function activate(context) {
     highlighIssue
   );
 
-  console.log('Extension activated.')
-
   let timeout = undefined;  
-
   let triggerValidateSpec = editor => {
     if (timeout) {
       clearTimeout(timeout);
@@ -36,6 +33,7 @@ function activate(context) {
       if (
         vscode.window.activeTextEditor &&
         event.document === vscode.window.activeTextEditor.document
+        && event.document.languageId === 'yaml'
       ) {
         triggerValidateSpec(vscode.window.activeTextEditor);
       }

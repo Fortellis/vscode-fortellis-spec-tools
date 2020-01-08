@@ -42,7 +42,7 @@
         }
       ]
     },
-    "viewsContainers": {
+    /*"viewsContainers": {
       "activitybar": [
         {
           "id": "fortellis-spec-validator",
@@ -50,9 +50,9 @@
           "icon": "media/dep.svg"
         }
       ]
-    },
+    },*/
     "views": {
-      "fortellis-spec-validator": [
+      "explorer": [
         {
           "id": "fortellis-spec-validator-view",
           "name": "Fortellis Spec Validation"
