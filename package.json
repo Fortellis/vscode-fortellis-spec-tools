@@ -22,8 +22,8 @@
         "title": "Validate",
         "category": "Fortellis Spec Validator",
         "icon": {
-          "light": "resources/light/refresh.svg",
-          "dark": "resources/dark/refresh.svg"
+          "light": "resources/icons/light/refresh.svg",
+          "dark": "resources/icons/dark/refresh.svg"
         }
       }
     ],

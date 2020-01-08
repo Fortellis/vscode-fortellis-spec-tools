@@ -1,24 +1,40 @@
 const vscode = require('vscode');
+const path = require('path');
 
 class FortellisSpecValidatorProvider {
   constructor(issues) {
     this._onDidChangeTreeData = new vscode.EventEmitter();
-		this.onDidChangeTreeData = this._onDidChangeTreeData.event;
+    this.onDidChangeTreeData = this._onDidChangeTreeData.event;
     this.updateIssues(issues);
-	}
+  }
 
   updateIssues(issues) {
     this.data = [
-      new TreeItem(
-        { message: 'Validation Issues' },
-        issues ? issues.map(issue => new TreeItem(issue)) : []
-      )
+      { message: 'Validation Issues', isRoot: true, children: issues }
     ];
     this._onDidChangeTreeData.fire();
   }
 
   getTreeItem(element) {
-    return element;
+    let treeItem = new vscode.TreeItem(
+      element.message,
+      element.isRoot
+        ? vscode.TreeItemCollapsibleState.Expanded
+        : vscode.TreeItemCollapsibleState.None
+    );
+    if (!element.isRoot) {
+			treeItem.tooltip = 'Show Issue';			
+			treeItem.iconPath = {
+				light: path.join(__filename,'..', '..', 'resources', 'icons', 'light', 'error.svg'),
+				dark: path.join(__filename, '..', '..', 'resources', 'icons', 'dark', 'error.svg')
+			};
+      treeItem.command = {
+        command: 'extension.highlightIssue',
+        title: 'Show Issue',
+        arguments: [element]
+      };
+    }
+    return treeItem;
   }
 
   getChildren(element) {
@@ -26,23 +42,6 @@ class FortellisSpecValidatorProvider {
       return this.data;
     }
     return element.children;
-  }
-}
-
-class TreeItem extends vscode.TreeItem {
-  constructor(issue, children) {
-    super(
-      issue.message,
-      children === undefined
-        ? vscode.TreeItemCollapsibleState.None
-        : vscode.TreeItemCollapsibleState.Expanded
-    );
-		this.children = children;
-		this.command = {
-			command: 'extension.highlightIssue',
-			title: 'Show Issue',
-			arguments: [issue]
-		}
   }
 }
 
