@@ -42,7 +42,7 @@
         }
       ]
     },
-    /*"viewsContainers": {
+    "viewsContainers": {
       "activitybar": [
         {
           "id": "fortellis-spec-validator",
@@ -50,8 +50,14 @@
           "icon": "media/dep.svg"
         }
       ]
-    },*/
+    },
     "views": {
+      "fortellis-spec-validator": [
+        {
+          "id": "fortellis-spec-validator-view",
+          "name": ""
+        }
+      ],
       "explorer": [
         {
           "id": "fortellis-spec-validator-view",

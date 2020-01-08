@@ -10,7 +10,15 @@ class FortellisSpecValidatorProvider {
 
   updateIssues(issues) {
     this.data = [
-      { message: 'Validation Issues', isRoot: true, children: issues }
+      {
+        message:
+          issues && issues.length > 0
+            ? 'Validation Issues'
+            : 'Specification valid',
+				isRoot: true,
+				valid: !(issues && issues.length > 0),
+        children: issues
+      }
     ];
     this._onDidChangeTreeData.fire();
   }
@@ -18,16 +26,37 @@ class FortellisSpecValidatorProvider {
   getTreeItem(element) {
     let treeItem = new vscode.TreeItem(
       element.message,
-      element.isRoot
+      (element.children !== undefined && element.children.length > 0) 
         ? vscode.TreeItemCollapsibleState.Expanded
         : vscode.TreeItemCollapsibleState.None
-    );
-    if (!element.isRoot) {
-			treeItem.tooltip = 'Show Issue';			
+		);
+		let icon = 'error.svg';
+		if(element.isRoot && element.valid) icon = 'check.svg';
+
+		if(!element.isRoot || (element.isRoot && element.valid)){
 			treeItem.iconPath = {
-				light: path.join(__filename,'..', '..', 'resources', 'icons', 'light', 'error.svg'),
-				dark: path.join(__filename, '..', '..', 'resources', 'icons', 'dark', 'error.svg')
+				light: path.join(
+					__filename,
+					'..',
+					'..',
+					'resources',
+					'icons',
+					'light',
+					icon
+				),
+				dark: path.join(
+					__filename,
+					'..',
+					'..',
+					'resources',
+					'icons',
+					'dark',
+					icon
+				)
 			};
+		}
+    if (!element.isRoot) {
+      treeItem.tooltip = 'Show Issue';      
       treeItem.command = {
         command: 'extension.highlightIssue',
         title: 'Show Issue',

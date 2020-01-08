@@ -70,9 +70,9 @@ function validateSpec(editor) {
       diagnosticCollection.set(editor.document.uri, diagnostics);
       if(statusBarMessage) statusBarMessage.dispose();
       if (res.length > 0) {
-        statusBarMessage = vscode.window.setStatusBarMessage('Specification invalid');
+        statusBarMessage = vscode.window.setStatusBarMessage('$(error) Specification invalid');
       } else {
-        statusBarMessage = vscode.window.setStatusBarMessage('Specification valid', 5000);
+        statusBarMessage = vscode.window.setStatusBarMessage('$(check) Specification valid', 5000);
       }
     })
     .catch(err => {
