@@ -11,23 +11,36 @@
     "Other"
   ],
   "activationEvents": [
+    "onView:fortellis-spec-validator-view",
     "onLanguage:yaml"
   ],
-  "main": "./extension",
+  "main": "./src/extension",
   "contributes": {
     "commands": [
       {
         "command": "extension.validateSpec",
         "title": "Validate",
-        "category": "Fortellis Spec"
+        "category": "Fortellis Spec",
+        "icon": {
+          "light": "resources/icons/light/refresh.svg",
+          "dark": "resources/icons/dark/refresh.svg"
+        }
       },
       {
         "command": "extension.previewSpec",
         "title": "Preview",
         "category": "Fortellis Spec"
+        
       }
     ],
     "menus": {
+      "view/title": [
+        {
+          "command": "extension.validateSpec",
+          "when": "view == fortellis-spec-validator-view",
+          "group": "navigation"
+        }
+      ],
       "commandPalette": [
         {
           "command": "extension.validateSpec",
@@ -36,6 +49,29 @@
         {
           "command": "extension.previewSpec",
           "when": "editorLangId == yaml"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "fortellis-spec-validator",
+          "title": "Fortellis Spec Validation",
+          "icon": "media/dep.svg"
+        }
+      ]
+    },
+    "views": {
+      "fortellis-spec-validator": [
+        {
+          "id": "fortellis-spec-validator-view",
+          "name": ""
+        }
+      ],
+      "explorer": [
+        {
+          "id": "fortellis-spec-validator-view",
+          "name": "Fortellis Spec Validation"
         }
       ]
     }

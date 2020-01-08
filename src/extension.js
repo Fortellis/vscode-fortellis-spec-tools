@@ -1,9 +1,12 @@
 const vscode = require("vscode");
 const validate = require("@fortellis/spec-validator");
 const generatePreview = require("./previewGenerator");
+const FortellisSpecValidatorTreeProvider = require('./fortellisSpecValidatorTreeProvider');
 
 const diagnosticCollection = vscode.languages.createDiagnosticCollection();
 let webviewPanel = undefined;
+const treeProvider = new FortellisSpecValidatorTreeProvider();
+let statusBarMessage;
 
 function activate(context) {
   const validateAction = vscode.commands.registerTextEditorCommand(
@@ -16,8 +19,12 @@ function activate(context) {
     previewSpec
   );
 
-  let timeout = undefined;
+  const highlightIssueAction = vscode.commands.registerTextEditorCommand(
+    'extension.highlightIssue',
+    highlighIssue
+  );
 
+  let timeout = undefined;
   let triggerValidateSpec = editor => {
     if (timeout) {
       clearTimeout(timeout);
@@ -36,6 +43,7 @@ function activate(context) {
       if (
         vscode.window.activeTextEditor &&
         event.document === vscode.window.activeTextEditor.document
+        && event.document.languageId === 'yaml'
       ) {
         triggerValidateSpec(vscode.window.activeTextEditor);
       }
@@ -46,36 +54,36 @@ function activate(context) {
 
   context.subscriptions.push(validateAction);
   context.subscriptions.push(previewAction);
+  context.subscriptions.push(highlightIssueAction);
   context.subscriptions.push(diagnosticCollection);
+
+  vscode.window.registerTreeDataProvider('fortellis-spec-validator-view', treeProvider);
+}
+
+function highlighIssue(editor, edit, issue) {
+  editor.selection = new vscode.Selection(
+    new vscode.Position(
+      issue.range.start.line,
+      issue.range.start.character
+    ),
+    new vscode.Position(issue.range.end.line, issue.range.end.character)
+  );
+  editor.revealRange(issue.range, vscode.TextEditorRevealType.InCenter);
 }
 
 function validateSpec(editor) {
   validate(editor.document.getText())
     .then(res => {
-      const diagnostics = res.map(err => {
-        return new vscode.Diagnostic(err.range, err.message);
+      const diagnostics = res.map(errItem => {
+        return new vscode.Diagnostic(errItem.range, errItem.message);
       });
+      treeProvider.updateIssues(res);
       diagnosticCollection.set(editor.document.uri, diagnostics);
-      res.forEach(item => {
-        vscode.window.showErrorMessage(item.message, "Go to Issue").then(
-          () => {
-            editor.selection = new vscode.Selection(
-              new vscode.Position(
-                item.range.start.line,
-                item.range.start.character
-              ),
-              new vscode.Position(item.range.end.line, item.range.end.character)
-            );
-          },
-          err => {
-            vscode.window.showInformationMessage(err);
-          }
-        );
-      });
+      if(statusBarMessage) statusBarMessage.dispose();
       if (res.length > 0) {
-        vscode.window.setStatusBarMessage("Specification invalid", 5000);
+        statusBarMessage = vscode.window.setStatusBarMessage('$(error) Specification invalid');
       } else {
-        vscode.window.setStatusBarMessage("Specification valid", 5000);
+        statusBarMessage = vscode.window.setStatusBarMessage('$(check) Specification valid', 5000);
       }
     })
     .catch(err => {
