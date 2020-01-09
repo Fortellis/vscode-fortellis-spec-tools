@@ -7,6 +7,34 @@ const styles = require("./styles");
 const start = '<!DOCTYPE html><html lang="en">';
 const end = "</html>";
 
+const ELEMENTS = {
+  body: "body",
+  div: "div",
+  span: "span",
+  h1: "h1",
+  h2: "h2",
+  h3: "h3",
+  p: "p",
+  a: "a",
+  head: "head",
+  title: "title",
+  style: "style",
+  meta: "meta",
+  link: "link"
+};
+
+function createElement(type, attributes, children) {
+  return `<${type} ${
+    attributes
+      ? Object.entries(attributes)
+          .map(([attr, value]) => `${attr}="${value}"`)
+          .join(" ")
+      : ""
+  }>${
+    Array.isArray(children) ? children.join("\n") : children || ""
+  }</${type}>`;
+}
+
 async function generatePreview(document) {
   const parsedSpec = parseWithPointers(document, { json: false });
   const specParsed = await refparser.dereference(parsedSpec.data);
@@ -32,32 +60,52 @@ async function generatePreview(document) {
     })
     .join("\n");
 
-  const dom = `${start}${head(spec.info.title)}
-<body>
-  <div>
-    <div class="preview-banner">
-      <h1>Fortellis API Documentation Preview</h1>
-      <p>This is a preview and is not an exact representation what will be avaliable on <a href="https://apidocs.fortellis.io">API docs</a> after spec publishing.</p>
-    </div>
-    <div>
-      ${apiTitle(spec)}
-      ${pathsDom}
-    </div>
-  </div>
-</body>
-${end}`;
-
-  return dom;
+  return (
+    "<!DOCTYPE html>" +
+    createElement("html", { lang: "en" }, [
+      head(spec.info.title),
+      createElement(
+        ELEMENTS.body,
+        null,
+        createElement(ELEMENTS.div, null, [
+          createElement(ELEMENTS.div, { class: "preview-banner" }, [
+            createElement(
+              ELEMENTS.h1,
+              null,
+              "Fortellis API Documentation Preview"
+            ),
+            createElement(ELEMENTS.p, null, [
+              "This is a preview and is not an exact representation what will be avaliable on ",
+              createElement(
+                ELEMENTS.a,
+                { href: "https://apidocs.fortellis.io" },
+                "API Docs"
+              ),
+              " after spec publishing."
+            ])
+          ]),
+          createElement(ELEMENTS.div, null, [apiTitle(spec), pathsDom])
+        ])
+      )
+    ])
+  );
 }
 
 function head(title) {
-  return `<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${title}</title>
-  <link href="https://fonts.googleapis.com/css?family=Montserrat:700|Raleway:400,500i,700&display=swap" rel="stylesheet"> 
-  <style>${styles}</style>
-</head>`;
+  return createElement(ELEMENTS.head, null, [
+    createElement(ELEMENTS.meta, { charset: "UTF-8" }),
+    createElement(ELEMENTS.meta, {
+      name: "viewport",
+      content: "width=device-width, initial-scale=1.0"
+    }),
+    createElement(ELEMENTS.title, null, title),
+    createElement(ELEMENTS.link, {
+      href:
+        "https://fonts.googleapis.com/css?family=Montserrat:700|Raleway:400,500i,700&display=swap",
+      rel: "stylesheet"
+    }),
+    createElement(ELEMENTS.style, null, styles)
+  ]);
 }
 
 function apiTitle(spec) {
