@@ -1,14 +1,21 @@
 const vscode = require("vscode");
 const validate = require("@fortellis/spec-validator");
-const generatePreview = require("./previewGenerator");
-const FortellisSpecValidatorTreeProvider = require('./fortellisSpecValidatorTreeProvider');
+const generatePreview = require("./preview/previewGenerator");
+const generateError = require("./errorGenerator");
+const FortellisSpecValidatorTreeProvider = require("./fortellisSpecValidatorTreeProvider");
 
-const diagnosticCollection = vscode.languages.createDiagnosticCollection();
-let webviewPanel = undefined;
 const treeProvider = new FortellisSpecValidatorTreeProvider();
+const diagnosticCollection = vscode.languages.createDiagnosticCollection();
+
 let statusBarMessage;
+let webviewPanels = {};
+// Configuration values
+let updateValidationEnabled = true;
+let saveValidationEnabled = true;
 
 function activate(context) {
+  updateConfiguration();
+
   const validateAction = vscode.commands.registerTextEditorCommand(
     "extension.validateSpec",
     validateSpec
@@ -20,7 +27,7 @@ function activate(context) {
   );
 
   const highlightIssueAction = vscode.commands.registerTextEditorCommand(
-    'extension.highlightIssue',
+    "extension.highlightIssue",
     highlighIssue
   );
 
@@ -32,9 +39,7 @@ function activate(context) {
     }
     timeout = setTimeout(() => {
       validateSpec(editor);
-      if (webviewPanel) {
-        previewSpec(editor);
-      }
+      updatePreview(editor);
     }, 1000);
   };
 
@@ -52,9 +57,27 @@ function activate(context) {
   vscode.workspace.onDidChangeTextDocument(
     event => {
       if (
+        updateValidationEnabled &&
         vscode.window.activeTextEditor &&
-        event.document === vscode.window.activeTextEditor.document
-        && event.document.languageId === 'yaml'
+        event.document === vscode.window.activeTextEditor.document &&
+        event.document.languageId === "yaml"
+      ) {
+        triggerValidateSpec(vscode.window.activeTextEditor);
+      }
+    },
+    null,
+    context.subscriptions
+  );
+
+  vscode.workspace.onDidSaveTextDocument(
+    document => {
+      if (
+        saveValidationEnabled &&
+        document &&
+        document.languageId === "yaml" &&
+        vscode.window.activeTextEditor &&
+        vscode.window.activeTextEditor.document &&
+        document === vscode.window.activeTextEditor.document
       ) {
         triggerValidateSpec(vscode.window.activeTextEditor);
       }
@@ -69,20 +92,28 @@ function activate(context) {
     context.subscriptions
   )
 
+  vscode.workspace.onDidChangeConfiguration(() => updateConfiguration());
+
   context.subscriptions.push(validateAction);
   context.subscriptions.push(previewAction);
   context.subscriptions.push(highlightIssueAction);
   context.subscriptions.push(diagnosticCollection);
 
-  vscode.window.registerTreeDataProvider('fortellis-spec-validator-view', treeProvider);
+  vscode.window.registerTreeDataProvider(
+    "fortellis-spec-validator-view",
+    treeProvider
+  );
+}
+
+function updateConfiguration() {
+  const config = vscode.workspace.getConfiguration("fortellisSpec");
+  updateValidationEnabled = config.validation.onChange;
+  saveValidationEnabled = config.validation.onSave;
 }
 
 function highlighIssue(editor, edit, issue) {
   editor.selection = new vscode.Selection(
-    new vscode.Position(
-      issue.range.start.line,
-      issue.range.start.character
-    ),
+    new vscode.Position(issue.range.start.line, issue.range.start.character),
     new vscode.Position(issue.range.end.line, issue.range.end.character)
   );
   editor.revealRange(issue.range, vscode.TextEditorRevealType.InCenter);
@@ -96,11 +127,16 @@ function validateSpec(editor) {
       });
       treeProvider.updateIssues(res);
       diagnosticCollection.set(editor.document.uri, diagnostics);
-      if(statusBarMessage) statusBarMessage.dispose();
+      if (statusBarMessage) statusBarMessage.dispose();
       if (res.length > 0) {
-        statusBarMessage = vscode.window.setStatusBarMessage('$(error) Specification invalid');
+        statusBarMessage = vscode.window.setStatusBarMessage(
+          "$(error) Specification invalid"
+        );
       } else {
-        statusBarMessage = vscode.window.setStatusBarMessage('$(check) Specification valid', 5000);
+        statusBarMessage = vscode.window.setStatusBarMessage(
+          "$(check) Specification valid",
+          5000
+        );
       }
     })
     .catch(err => {
@@ -110,20 +146,41 @@ function validateSpec(editor) {
 
 function previewSpec(editor) {
   const document = editor.document;
-  if (!webviewPanel) {
-    webviewPanel = vscode.window.createWebviewPanel(
+  const fullFileName = document.fileName.split("/");
+  const fileName = fullFileName[fullFileName.length - 1];
+
+  if (!webviewPanels[document.fileName]) {
+    webviewPanels[document.fileName] = vscode.window.createWebviewPanel(
       "specPreview",
-      document.fileName,
+      "Fortellis API Documentation Preview: " + fileName,
       vscode.ViewColumn.Beside,
       {}
     );
+
+    webviewPanels[document.fileName].onDidDispose(() => {
+      delete webviewPanels[document.fileName];
+    });
   }
-  const text = document.getText();
-  generatePreview(text)
-    .then(res => {
-      webviewPanel.webview.html = res;
-    })
-    .catch(err => console.log(err));
+
+  updatePreview(editor);
+}
+
+function updatePreview(editor) {
+  const document = editor.document;
+
+  if (webviewPanels[document.fileName]) {
+    const panel = webviewPanels[document.fileName];
+    const text = document.getText();
+    generatePreview(text)
+      .then(res => {
+        panel.webview.html = res;
+      })
+      .catch(err => {
+        console.log(err);
+        const diagnostics = diagnosticCollection.get(document.uri);
+        panel.webview.html = generateError(err, document, diagnostics);
+      });
+  }
 }
 
 // this method is called when your extension is deactivated
