@@ -45,7 +45,11 @@ function activate(context) {
 
   vscode.window.onDidChangeActiveTextEditor(
     event => {
-      if (event.document.languageId === 'yaml') {
+      if (
+        updateValidationEnabled &&
+        vscode.window.activeTextEditor &&
+        event.document.languageId === 'yaml'
+      ) {
         triggerValidateSpec(vscode.window.activeTextEditor);
       }
     },
