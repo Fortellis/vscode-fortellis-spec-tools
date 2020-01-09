@@ -102,10 +102,18 @@ function apiEndpoint(spec, path, method, endpoint) {
     </div>`
           : ""
       }
-      <div class="resource-detail">
-        <div class="resource-detail__title">Category</div>
-        <div class="resource-detail__content">${endpoint.tags.join(", ")}</div>
-      </div>
+      ${
+        endpoint.tags ? (
+          <div class="resource-detail">
+            <div class="resource-detail__title">Category</div>
+            <div class="resource-detail__content">
+              ${endpoint.tags.join(", ")}
+            </div>
+          </div>
+        ) : (
+          ""
+        )
+      }
       <h2>Request</h2>
       ${apiParameters(spec, endpoint)}
       <h2>Response</h2>
