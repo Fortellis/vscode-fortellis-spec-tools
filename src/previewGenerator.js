@@ -21,6 +21,25 @@ const styles = `<style>
     text-decoration: none;
   }
 
+  .preview-banner {
+    top: 0;
+    position: sticky;
+    position: -webkit-sticky;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #fff;
+    padding: 20px 0px;
+    border-bottom: 2px solid #f5f5f5;
+  }
+  .preview-banner h1 {
+    margin: 0px 0px 5px;
+    font-size: 20px;
+  }
+  .preview-banner p {
+    margin: 0px;
+  }
+
   .spec-header {
     background-color: #f5f5f5;
   }
@@ -262,7 +281,6 @@ function apiTitle(spec) {
 }
 
 function apiEndpoint(spec, path, method, endpoint) {
-  console.log(spec);
   return `<div class="spec-endpoint">
     <div class="spec-endpoint__header">
       <h2 class="spec-endpoint__header-title">
@@ -508,10 +526,16 @@ async function generatePreview(document) {
 
   const dom = `${start}${head(spec.info.title)}
 <body>
+  <div>
+    <div class="preview-banner">
+      <h1>Fortellis API Documentation Preview</h1>
+      <p>This is a preview and is not an exact representation what will be avaliable on <a href="https://apidocs.fortellis.io">API docs</a> after spec publishing.</p>
+    </div>
     <div>
       ${apiTitle(spec)}
       ${pathsDom}
     </div>
+  </div>
 </body>
 ${end}`;
 

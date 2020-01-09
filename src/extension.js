@@ -100,10 +100,12 @@ function validateSpec(editor) {
 
 function previewSpec(editor) {
   const document = editor.document;
+  const fullFileName = document.fileName.split('/');
+  const fileName = fullFileName[fullFileName.length - 1];
   if (!webviewPanel) {
     webviewPanel = vscode.window.createWebviewPanel(
       "specPreview",
-      document.fileName,
+      "Fortellis API Documentation Preview: " + fileName,
       vscode.ViewColumn.Beside,
       {}
     );
