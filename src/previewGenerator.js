@@ -454,7 +454,7 @@ function renderProperty(name, property, required = []) {
     );
     dom.push("</ul>");
   }
-  if (property.items) {
+  if (property.items && property.items.properties) {
     dom.push('<span class="array-bound">[</span>');
     dom.push(`<ul class="schema-list">`);
     dom.push(

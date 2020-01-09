@@ -116,6 +116,7 @@ function previewSpec(editor) {
       webviewPanel.webview.html = res;
     })
     .catch(err => {
+      console.log(err);
       const diagnostics = diagnosticCollection.get(document.uri);
       webviewPanel.webview.html = generateError(err, document, diagnostics);
     });
