@@ -9,17 +9,26 @@ class FortellisSpecValidatorProvider {
   }
 
   updateIssues(issues) {
-    this.data = [
-      {
-        message:
-          issues && issues.length > 0
-            ? 'Validation Issues'
-            : 'Specification valid',
-				isRoot: true,
-				valid: !(issues && issues.length > 0),
-        children: issues
-      }
-    ];
+    if (!issues) {
+      this.data = [];
+    } else {
+      this.data = [
+        {
+          message:
+            issues && issues.length > 0
+              ? 'Validation Issues'
+              : 'Specification valid',
+          isRoot: true,
+          valid: !(issues && issues.length > 0),
+          children: issues
+        }
+      ];
+    }
+    this._onDidChangeTreeData.fire();
+  }
+
+  clear() {
+    this.data = [];
     this._onDidChangeTreeData.fire();
   }
 

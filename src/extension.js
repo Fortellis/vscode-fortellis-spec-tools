@@ -35,8 +35,19 @@ function activate(context) {
       if (webviewPanel) {
         previewSpec(editor);
       }
-    }, 2000);
+    }, 1000);
   };
+
+  vscode.window.onDidChangeActiveTextEditor(
+    event => {
+      console.log('onDidChangeActiveTextEditor fired', event);
+      if (event.document.languageId === 'yaml') {
+        triggerValidateSpec(vscode.window.activeTextEditor);
+      }
+    },
+    null,
+    context.subscriptions
+  )
 
   vscode.workspace.onDidChangeTextDocument(
     event => {
@@ -51,6 +62,12 @@ function activate(context) {
     null,
     context.subscriptions
   );
+
+  vscode.workspace.onDidCloseTextDocument(
+    () => treeProvider.clear(),
+    null,
+    context.subscriptions
+  )
 
   context.subscriptions.push(validateAction);
   context.subscriptions.push(previewAction);
