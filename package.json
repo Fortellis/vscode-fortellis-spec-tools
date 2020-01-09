@@ -73,6 +73,21 @@
           "name": "Fortellis Spec Validation"
         }
       ]
+    },
+    "configuration": {
+      "title": "Fortellis Spec Validator",
+      "properties": {
+        "fortellisSpec.validation.onChange": {
+          "type": "boolean",
+          "default": true,
+          "description": "Toggles validation for YAML documents on document change."
+        },
+        "fortellisSpec.validation.onSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Toggles validation for YAML documents on save."
+        }
+      }
     }
   },
   "scripts": {

@@ -9,8 +9,13 @@ const diagnosticCollection = vscode.languages.createDiagnosticCollection();
 
 let statusBarMessage;
 let webviewPanel = undefined;
+// Configuration values
+let updateValidationEnabled = true;
+let saveValidationEnabled = true;
 
 function activate(context) {
+  updateConfiguration();
+
   const validateAction = vscode.commands.registerTextEditorCommand(
     "extension.validateSpec",
     validateSpec
@@ -43,6 +48,7 @@ function activate(context) {
   vscode.workspace.onDidChangeTextDocument(
     event => {
       if (
+        updateValidationEnabled &&
         vscode.window.activeTextEditor &&
         event.document === vscode.window.activeTextEditor.document &&
         event.document.languageId === "yaml"
@@ -54,6 +60,25 @@ function activate(context) {
     context.subscriptions
   );
 
+  vscode.workspace.onDidSaveTextDocument(
+    document => {
+      if (
+        saveValidationEnabled &&
+        document &&
+        document.languageId === "yaml" &&
+        vscode.window.activeTextEditor &&
+        vscode.window.activeTextEditor.document &&
+        document === vscode.window.activeTextEditor.document
+      ) {
+        triggerValidateSpec(vscode.window.activeTextEditor);
+      }
+    },
+    null,
+    context.subscriptions
+  );
+
+  vscode.workspace.onDidChangeConfiguration(() => updateConfiguration());
+
   context.subscriptions.push(validateAction);
   context.subscriptions.push(previewAction);
   context.subscriptions.push(highlightIssueAction);
@@ -63,6 +88,12 @@ function activate(context) {
     "fortellis-spec-validator-view",
     treeProvider
   );
+}
+
+function updateConfiguration() {
+  const config = vscode.workspace.getConfiguration("fortellisSpec");
+  updateValidationEnabled = config.validation.onChange;
+  saveValidationEnabled = config.validation.onSave;
 }
 
 function highlighIssue(editor, edit, issue) {
@@ -100,7 +131,7 @@ function validateSpec(editor) {
 
 function previewSpec(editor) {
   const document = editor.document;
-  const fullFileName = document.fileName.split('/');
+  const fullFileName = document.fileName.split("/");
   const fileName = fullFileName[fullFileName.length - 1];
   if (!webviewPanel) {
     webviewPanel = vscode.window.createWebviewPanel(
