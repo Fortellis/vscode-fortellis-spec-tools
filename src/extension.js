@@ -1,6 +1,6 @@
 const vscode = require("vscode");
 const validate = require("@fortellis/spec-validator");
-const generatePreview = require("./previewGenerator");
+const generatePreview = require("./preview/previewGenerator");
 const generateError = require("./errorGenerator");
 const FortellisSpecValidatorTreeProvider = require("./fortellisSpecValidatorTreeProvider");
 
@@ -8,7 +8,7 @@ const treeProvider = new FortellisSpecValidatorTreeProvider();
 const diagnosticCollection = vscode.languages.createDiagnosticCollection();
 
 let statusBarMessage;
-let webviewPanel = undefined;
+let webviewPanels = {};
 // Configuration values
 let updateValidationEnabled = true;
 let saveValidationEnabled = true;
@@ -39,9 +39,7 @@ function activate(context) {
     }
     timeout = setTimeout(() => {
       validateSpec(editor);
-      if (webviewPanel) {
-        previewSpec(editor);
-      }
+      updatePreview(editor);
     }, 2000);
   };
 
@@ -133,24 +131,39 @@ function previewSpec(editor) {
   const document = editor.document;
   const fullFileName = document.fileName.split("/");
   const fileName = fullFileName[fullFileName.length - 1];
-  if (!webviewPanel) {
-    webviewPanel = vscode.window.createWebviewPanel(
+
+  if (!webviewPanels[document.fileName]) {
+    webviewPanels[document.fileName] = vscode.window.createWebviewPanel(
       "specPreview",
       "Fortellis API Documentation Preview: " + fileName,
       vscode.ViewColumn.Beside,
       {}
     );
-  }
-  const text = document.getText();
-  generatePreview(text)
-    .then(res => {
-      webviewPanel.webview.html = res;
-    })
-    .catch(err => {
-      console.log(err);
-      const diagnostics = diagnosticCollection.get(document.uri);
-      webviewPanel.webview.html = generateError(err, document, diagnostics);
+
+    webviewPanels[document.fileName].onDidDispose(() => {
+      delete webviewPanels[document.fileName];
     });
+  }
+
+  updatePreview(editor);
+}
+
+function updatePreview(editor) {
+  const document = editor.document;
+
+  if (webviewPanels[document.fileName]) {
+    const panel = webviewPanels[document.fileName];
+    const text = document.getText();
+    generatePreview(text)
+      .then(res => {
+        panel.webview.html = res;
+      })
+      .catch(err => {
+        console.log(err);
+        const diagnostics = diagnosticCollection.get(document.uri);
+        panel.webview.html = generateError(err, document, diagnostics);
+      });
+  }
 }
 
 // this method is called when your extension is deactivated
