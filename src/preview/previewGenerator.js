@@ -7,7 +7,7 @@ const styles = require("./styles");
 const start = '<!DOCTYPE html><html lang="en">';
 const end = "</html>";
 
-const ELEMENTS = {
+const EL = {
   body: "body",
   div: "div",
   span: "span",
@@ -31,7 +31,9 @@ function createElement(type, attributes, children) {
           .join(" ")
       : ""
   }>${
-    Array.isArray(children) ? children.join("\n") : children || ""
+    Array.isArray(children)
+      ? children.filter(item => item !== null).join("\n")
+      : children || ""
   }</${type}>`;
 }
 
@@ -65,26 +67,26 @@ async function generatePreview(document) {
     createElement("html", { lang: "en" }, [
       head(spec.info.title),
       createElement(
-        ELEMENTS.body,
+        EL.body,
         null,
-        createElement(ELEMENTS.div, null, [
-          createElement(ELEMENTS.div, { class: "preview-banner" }, [
+        createElement(EL.div, null, [
+          createElement(EL.div, { class: "preview-banner" }, [
             createElement(
-              ELEMENTS.h1,
+              EL.h1,
               null,
               "Fortellis API Documentation Preview"
             ),
-            createElement(ELEMENTS.p, null, [
+            createElement(EL.p, null, [
               "This is a preview and is not an exact representation what will be avaliable on ",
               createElement(
-                ELEMENTS.a,
+                EL.a,
                 { href: "https://apidocs.fortellis.io" },
                 "API Docs"
               ),
               " after spec publishing."
             ])
           ]),
-          createElement(ELEMENTS.div, null, [apiTitle(spec), pathsDom])
+          createElement(EL.div, null, [apiTitle(spec), pathsDom])
         ])
       )
     ])
@@ -92,42 +94,57 @@ async function generatePreview(document) {
 }
 
 function head(title) {
-  return createElement(ELEMENTS.head, null, [
-    createElement(ELEMENTS.meta, { charset: "UTF-8" }),
-    createElement(ELEMENTS.meta, {
+  return createElement(EL.head, null, [
+    createElement(EL.meta, { charset: "UTF-8" }),
+    createElement(EL.meta, {
       name: "viewport",
       content: "width=device-width, initial-scale=1.0"
     }),
-    createElement(ELEMENTS.title, null, title),
-    createElement(ELEMENTS.link, {
+    createElement(EL.title, null, title),
+    createElement(EL.link, {
       href:
         "https://fonts.googleapis.com/css?family=Montserrat:700|Raleway:400,500i,700&display=swap",
       rel: "stylesheet"
     }),
-    createElement(ELEMENTS.style, null, styles)
+    createElement(EL.style, null, styles)
   ]);
 }
 
 function apiTitle(spec) {
-  return `<div class="spec-header">
-    <div class="spec-header__description">
-      <h1 class="spec-header__description-title">${spec.info.title}</h1>
-      <a href="https://apidocs.fortellis.io">${
+  return createElement(
+    EL.div,
+    { class: "spec-header" },
+    createElement(EL.div, { class: "spec-header__description" }, [
+      createElement(
+        EL.h1,
+        { class: "spec-header__description-title" },
+        spec.info.title
+      ),
+      createElement(
+        EL.a,
+        { href: "https://apidocs.fortellis.io" },
         spec.basePath
           ? spec.basePath
               .split("/")[1]
               .split("-")
               .join(" ")
           : "basePath"
-      }</a>
-      <div class="spec-header__description-description">${marky(
-        spec.info.description
-      )}</div>
-    </div>
-  </div>`;
+      ),
+      createElement(
+        EL.div,
+        { class: "spec-header__description-description" },
+        marky(spec.info.description)
+      )
+    ])
+  );
 }
 
 function apiEndpoint(spec, path, method, endpoint) {
+  return createElement(EL.div, { class: 'spec-endpoint'}, [
+    createElement(EL.div, { class: 'spec-endpoint__header'}, [
+      createElement(El.h2, { class: 'spec-endpoint__header-title'},)
+    ])
+  ])
   return `<div class="spec-endpoint">
     <div class="spec-endpoint__header">
       <h2 class="spec-endpoint__header-title">
