@@ -48,14 +48,14 @@ function activate(context) {
       if (
         updateValidationEnabled &&
         vscode.window.activeTextEditor &&
-        event.document.languageId === 'yaml'
+        event.document.languageId === "yaml"
       ) {
         triggerValidateSpec(vscode.window.activeTextEditor);
       }
     },
     null,
     context.subscriptions
-  )
+  );
 
   vscode.workspace.onDidChangeTextDocument(
     event => {
@@ -93,7 +93,7 @@ function activate(context) {
     () => treeProvider.clear(),
     null,
     context.subscriptions
-  )
+  );
 
   vscode.workspace.onDidChangeConfiguration(() => updateConfiguration());
 

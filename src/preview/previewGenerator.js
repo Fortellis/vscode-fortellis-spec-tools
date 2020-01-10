@@ -104,12 +104,12 @@ function apiEndpoint(spec, path, method, endpoint) {
       }
       ${
         endpoint.tags ? (
-          <div class="resource-detail">
+          `<div class="resource-detail">
             <div class="resource-detail__title">Category</div>
             <div class="resource-detail__content">
               ${endpoint.tags.join(", ")}
             </div>
-          </div>
+          </div>`
         ) : (
           ""
         )
