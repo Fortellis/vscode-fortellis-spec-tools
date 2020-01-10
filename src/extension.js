@@ -13,7 +13,7 @@ let webviewPanels = {};
 let updateValidationEnabled = true;
 let saveValidationEnabled = true;
 
-function activate(context) {
+async function activate(context) {
   updateConfiguration();
 
   const validateAction = vscode.commands.registerTextEditorCommand(
@@ -40,7 +40,7 @@ function activate(context) {
     timeout = setTimeout(() => {
       validateSpec(editor);
       updatePreview(editor);
-    }, 1000);
+    }, 2000);
   };
 
   vscode.window.onDidChangeActiveTextEditor(
@@ -106,6 +106,8 @@ function activate(context) {
     "fortellis-spec-validator-view",
     treeProvider
   );
+
+  await validate('Force load the ruleset'); //The loadRuleset take some time on the first run so let's force it here to make validation more responsive later  
 }
 
 function updateConfiguration() {
