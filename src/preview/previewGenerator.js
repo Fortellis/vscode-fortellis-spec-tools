@@ -1,24 +1,10 @@
 const { parseWithPointers } = require("@stoplight/yaml");
 const refparser = require("json-schema-ref-parser");
 const mergeAllOf = require("json-schema-merge-allof");
+const { createElement } = require('./utils'); // Required for jsx
 const marky = require("markyjs");
 
 const styles = require("./styles");
-
-function createElement(type, attributes, ...c) {
-  const children = c.flat();
-  return `<${type} ${
-    attributes
-      ? Object.entries(attributes)
-          .map(([attr, value]) => `${attr}="${value}"`)
-          .join(" ")
-      : ""
-  }>${
-    Array.isArray(children)
-      ? children.filter(item => item !== null).join("\n")
-      : children || ""
-  }</${type}>`;
-}
 
 async function generatePreview(document) {
   const parsedSpec = parseWithPointers(document, { json: false });

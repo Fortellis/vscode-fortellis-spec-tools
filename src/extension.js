@@ -1,7 +1,7 @@
 const vscode = require("vscode");
 const validate = require("@fortellis/spec-validator");
 const generatePreview = require("./preview/previewGenerator");
-const generateError = require("./errorGenerator");
+const generateError = require("./preview/errorGenerator");
 const FortellisSpecValidatorTreeProvider = require("./fortellisSpecValidatorTreeProvider");
 
 const treeProvider = new FortellisSpecValidatorTreeProvider();
