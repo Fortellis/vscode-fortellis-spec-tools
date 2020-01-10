@@ -38,6 +38,11 @@
           "command": "extension.validateSpec",
           "when": "view == fortellis-spec-validator-view",
           "group": "navigation"
+        },
+        {
+          "command": "extension.previewSpec",
+          "when": "view == fortellis-spec-validator-view",
+          "group": "navigation"
         }
       ],
       "commandPalette": [
@@ -65,12 +70,6 @@
         {
           "id": "fortellis-spec-validator-view",
           "name": ""
-        }
-      ],
-      "explorer": [
-        {
-          "id": "fortellis-spec-validator-view",
-          "name": "Fortellis Spec Validation"
         }
       ]
     },
