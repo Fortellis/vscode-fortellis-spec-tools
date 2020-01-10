@@ -40,7 +40,7 @@ class FortellisSpecValidatorProvider {
         : vscode.TreeItemCollapsibleState.None
     );
     let icon = "error.svg";
-    if (element.isRoot && element.valid) icon = "check.svg";
+    if (element.isRoot && element.valid) icon = "verified.svg";
 
     if (!element.isRoot || (element.isRoot && element.valid)) {
       treeItem.iconPath = this.getIconPath(icon);
