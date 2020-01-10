@@ -9,17 +9,26 @@ class FortellisSpecValidatorProvider {
   }
 
   updateIssues(issues) {
-    this.data = [
-      {
-        message:
-          issues && issues.length > 0
-            ? "Validation Issues"
-            : "Specification valid",
-        isRoot: true,
-        valid: !(issues && issues.length > 0),
-        children: issues
-      }
-    ];
+    if (!issues) {
+      this.data = [];
+    } else {
+      this.data = [
+        {
+          message:
+            issues && issues.length > 0
+              ? 'Validation Issues'
+              : 'Specification valid',
+          isRoot: true,
+          valid: !(issues && issues.length > 0),
+          children: issues
+        }
+      ];
+    }
+    this._onDidChangeTreeData.fire();
+  }
+
+  clear() {
+    this.data = [];
     this._onDidChangeTreeData.fire();
   }
 
@@ -31,7 +40,7 @@ class FortellisSpecValidatorProvider {
         : vscode.TreeItemCollapsibleState.None
     );
     let icon = "error.svg";
-    if (element.isRoot && element.valid) icon = "check.svg";
+    if (element.isRoot && element.valid) icon = "verified.svg";
 
     if (!element.isRoot || (element.isRoot && element.valid)) {
       treeItem.iconPath = this.getIconPath(icon);

@@ -13,7 +13,7 @@ let webviewPanels = {};
 let updateValidationEnabled = true;
 let saveValidationEnabled = true;
 
-function activate(context) {
+async function activate(context) {
   updateConfiguration();
 
   const validateAction = vscode.commands.registerTextEditorCommand(
@@ -42,6 +42,20 @@ function activate(context) {
       updatePreview(editor);
     }, 2000);
   };
+
+  vscode.window.onDidChangeActiveTextEditor(
+    event => {
+      if (
+        updateValidationEnabled &&
+        vscode.window.activeTextEditor &&
+        event.document.languageId === "yaml"
+      ) {
+        triggerValidateSpec(vscode.window.activeTextEditor);
+      }
+    },
+    null,
+    context.subscriptions
+  );
 
   vscode.workspace.onDidChangeTextDocument(
     event => {
@@ -75,6 +89,12 @@ function activate(context) {
     context.subscriptions
   );
 
+  vscode.workspace.onDidCloseTextDocument(
+    () => treeProvider.clear(),
+    null,
+    context.subscriptions
+  );
+
   vscode.workspace.onDidChangeConfiguration(() => updateConfiguration());
 
   context.subscriptions.push(validateAction);
@@ -86,6 +106,8 @@ function activate(context) {
     "fortellis-spec-validator-view",
     treeProvider
   );
+
+  await validate('Force load the ruleset'); //The loadRuleset take some time on the first run so let's force it here to make validation more responsive later  
 }
 
 function updateConfiguration() {
@@ -117,7 +139,7 @@ function validateSpec(editor) {
         );
       } else {
         statusBarMessage = vscode.window.setStatusBarMessage(
-          "$(check) Specification valid",
+          "$(verified) Specification valid",
           5000
         );
       }

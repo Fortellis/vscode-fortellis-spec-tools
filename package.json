@@ -22,20 +22,29 @@
         "title": "Validate",
         "category": "Fortellis Spec",
         "icon": {
-          "light": "resources/icons/light/refresh.svg",
-          "dark": "resources/icons/dark/refresh.svg"
+          "light": "resources/icons/light/check.svg",
+          "dark": "resources/icons/dark/check.svg"
         }
       },
       {
         "command": "extension.previewSpec",
         "title": "Preview",
-        "category": "Fortellis Spec"
+        "category": "Fortellis Spec",
+        "icon": {
+          "light": "resources/icons/light/preview.svg",
+          "dark": "resources/icons/dark/preview.svg"
+        }
       }
     ],
     "menus": {
       "view/title": [
         {
           "command": "extension.validateSpec",
+          "when": "view == fortellis-spec-validator-view",
+          "group": "navigation"
+        },
+        {
+          "command": "extension.previewSpec",
           "when": "view == fortellis-spec-validator-view",
           "group": "navigation"
         }
@@ -65,12 +74,6 @@
         {
           "id": "fortellis-spec-validator-view",
           "name": ""
-        }
-      ],
-      "explorer": [
-        {
-          "id": "fortellis-spec-validator-view",
-          "name": "Fortellis Spec Validation"
         }
       ]
     },
@@ -106,7 +109,7 @@
     "vscode": "^1.1.6"
   },
   "dependencies": {
-    "@fortellis/spec-validator": "^1.0.2",
+    "@fortellis/spec-validator": "^1.0.3",
     "@stoplight/yaml": "^3.5.0",
     "json-schema-merge-allof": "^0.7.0",
     "json-schema-ref-parser": "^7.1.3",
