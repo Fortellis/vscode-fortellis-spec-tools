@@ -137,7 +137,7 @@ function validateSpec(editor) {
         );
       } else {
         statusBarMessage = vscode.window.setStatusBarMessage(
-          "$(check) Specification valid",
+          "$(verified) Specification valid",
           5000
         );
       }
