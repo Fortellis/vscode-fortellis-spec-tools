@@ -22,14 +22,18 @@
         "title": "Validate",
         "category": "Fortellis Spec",
         "icon": {
-          "light": "resources/icons/light/refresh.svg",
-          "dark": "resources/icons/dark/refresh.svg"
+          "light": "resources/icons/light/check.svg",
+          "dark": "resources/icons/dark/check.svg"
         }
       },
       {
         "command": "extension.previewSpec",
         "title": "Preview",
-        "category": "Fortellis Spec"
+        "category": "Fortellis Spec",
+        "icon": {
+          "light": "resources/icons/light/preview.svg",
+          "dark": "resources/icons/dark/preview.svg"
+        }
       }
     ],
     "menus": {
