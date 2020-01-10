@@ -14,7 +14,7 @@
     "onView:fortellis-spec-validator-view",
     "onLanguage:yaml"
   ],
-  "main": "./src/extension",
+  "main": "./dist/extension",
   "contributes": {
     "commands": [
       {
@@ -94,15 +94,19 @@
     }
   },
   "scripts": {
+    "build": "babel src -d dist",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "node ./node_modules/vscode/bin/test"
   },
   "devDependencies": {
-    "typescript": "^2.6.1",
-    "vscode": "^1.1.6",
-    "eslint": "^4.11.0",
+    "@babel/cli": "^7.7.7",
+    "@babel/core": "^7.7.7",
+    "@babel/plugin-transform-react-jsx": "^7.7.7",
+    "@types/mocha": "^2.2.42",
     "@types/node": "^7.0.43",
-    "@types/mocha": "^2.2.42"
+    "eslint": "^4.11.0",
+    "typescript": "^2.6.1",
+    "vscode": "^1.1.6"
   },
   "dependencies": {
     "@fortellis/spec-validator": "^1.0.3",
