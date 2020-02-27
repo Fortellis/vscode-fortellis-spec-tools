@@ -1,5 +1,5 @@
 const vscode = require("vscode");
-const validate = require("@fortellis/spec-validator");
+const { lintRaw } = require("@fortellis/spec-validator");
 const generatePreview = require("./preview/previewGenerator");
 const generateError = require("./preview/errorGenerator");
 const FortellisSpecValidatorTreeProvider = require("./fortellisSpecValidatorTreeProvider");
@@ -106,8 +106,6 @@ async function activate(context) {
     "fortellis-spec-validator-view",
     treeProvider
   );
-
-  await validate('Force load the ruleset'); //The loadRuleset take some time on the first run so let's force it here to make validation more responsive later  
 }
 
 function updateConfiguration() {
@@ -125,7 +123,13 @@ function highlighIssue(editor, edit, issue) {
 }
 
 function validateSpec(editor) {
-  validate(editor.document.getText())
+  lintRaw(editor.document.getText(), {
+    rulesets: {
+      "oas2-enhanced": true,
+      "oas2-fortellis": true
+    },
+    severity: 'warn'
+  })
     .then(res => {
       const diagnostics = res.map(errItem => {
         return new vscode.Diagnostic(errItem.range, errItem.message);
