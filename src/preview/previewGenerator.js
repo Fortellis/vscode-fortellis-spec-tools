@@ -107,7 +107,7 @@ function apiEndpoint(spec, path, method, endpoint) {
       <div class="spec-endpoint__body">
         <h3>Resource URL</h3>
         <div class="resource-url">
-          <code>{`https://api.fortellis.io/${path}`}</code>
+          <code>{`https://api.fortellis.io${path}`}</code>
         </div>
         <h3>Resource Details</h3>
         {spec.schemes ? (
