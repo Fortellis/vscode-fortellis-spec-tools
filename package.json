@@ -1,9 +1,32 @@
 {
-  "name": "fortellis-spec-validator",
-  "displayName": "Fortellis Spec Validator",
-  "description": "Validate fortellis specifications live in your editor.",
+  "name": "@fortellis/spec-tools",
+  "displayName": "Fortellis Spec Tools",
+  "description": "Work with fortellis specifications live in your editor.",
   "version": "0.0.1",
+  "main": "./dist/extension",
   "publisher": "fortellis",
+  "scripts": {
+    "build": "babel src -d dist",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "node ./node_modules/vscode/bin/test"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.7.7",
+    "@babel/core": "^7.7.7",
+    "@babel/plugin-transform-react-jsx": "^7.7.7",
+    "@types/mocha": "^2.2.42",
+    "@types/node": "^7.0.43",
+    "eslint": "^4.11.0",
+    "typescript": "^2.6.1",
+    "vscode": "^1.1.6"
+  },
+  "dependencies": {
+    "@fortellis/spec-validator": "^1.0.7",
+    "@stoplight/yaml": "^3.5.0",
+    "json-schema-merge-allof": "^0.7.0",
+    "json-schema-ref-parser": "^7.1.3",
+    "markyjs": "^1.0.1"
+  },
   "engines": {
     "vscode": "^1.41.0"
   },
@@ -14,7 +37,6 @@
     "onView:fortellis-spec-validator-view",
     "onLanguage:yaml"
   ],
-  "main": "./dist/extension",
   "contributes": {
     "commands": [
       {
@@ -65,7 +87,7 @@
         {
           "id": "fortellis-spec-validator",
           "title": "Fortellis Spec Validation",
-          "icon": "media/dep.svg"
+          "icon": "media/fortellis.svg"
         }
       ]
     },
@@ -92,27 +114,5 @@
         }
       }
     }
-  },
-  "scripts": {
-    "build": "babel src -d dist",
-    "postinstall": "node ./node_modules/vscode/bin/install",
-    "test": "node ./node_modules/vscode/bin/test"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.7.7",
-    "@babel/core": "^7.7.7",
-    "@babel/plugin-transform-react-jsx": "^7.7.7",
-    "@types/mocha": "^2.2.42",
-    "@types/node": "^7.0.43",
-    "eslint": "^4.11.0",
-    "typescript": "^2.6.1",
-    "vscode": "^1.1.6"
-  },
-  "dependencies": {
-    "@fortellis/spec-validator": "^1.0.7",
-    "@stoplight/yaml": "^3.5.0",
-    "json-schema-merge-allof": "^0.7.0",
-    "json-schema-ref-parser": "^7.1.3",
-    "markyjs": "^1.0.1"
   }
 }

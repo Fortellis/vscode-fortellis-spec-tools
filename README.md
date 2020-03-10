@@ -1,65 +1,30 @@
-# fortellis-spec-validator README
+# Fortellis Spec Tools
 
-This is the README for your extension "fortellis-spec-validator". After writing up a brief description, we recommend including the following sections.
+> Fortellis Spec Tools is currently in _beta_ and under development. Please report any issues found on GitHub following the issue template for _bug_.
 
-## Features
+## Using Spec Tools
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+Fortellis Spec Tools currently exposes two commands to help working with Fortellis API specifications: "Validate" and "Preview".
 
-For example if there is an image subfolder under your extension project workspace:
+### Validate
 
-\!\[feature X\]\(images/feature-x.png\)
+The validate command allows you to run the Fortellis spec validator on any `.yaml` document to get in-editor errors and warnings. Validate is run automatically when a `.yaml` document is changed or saved so you don't need to use the command manually. However you can modify this behavior in the configuration, documented below.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+#### Viewing Validation Notices
 
-## Requirements
+When the extension validates your API spec it will highlight errors inline with a red squiggley underline. You can hover over these to view the notice description in a tooltip. You can also view validation notices in the activity bar under the "Fortellis Spec" tab denoted by the Fortellis icon.
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+### Preview
 
-## Extension Settings
+The preview command allows you to view a mock-up of what your spec's API documentation will look like on <https://apidocs.fortellis.io/> once your spec has been published. The preview is live updating so you can keep it open to see your work as you go.
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+## Configuration
 
-For example:
+You can configure how Fortellis Spec Tools validates specifications. You can change these configuration values by clicking "Code" in the top left, going to Preferences > Settings and searching "Fortellis" in the "Search Settings" input.
 
-This extension contributes the following settings:
+![configuration example](/media/configuration.png)
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+| Property   | Type    | Description                                               | Default |
+| ---------- | ------- | --------------------------------------------------------- | ------- |
+| `onChange` | boolean | Toggles validation for YAML documents on document change. | `true`  |
+| `onSave`   | boolean | Toggles validation for YAML documents on save.            | `true`  |
