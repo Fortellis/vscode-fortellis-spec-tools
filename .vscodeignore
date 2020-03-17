@@ -12,3 +12,6 @@ src/**
 jsconfig.json
 vsc-extension-quickstart.md
 .eslintrc.json
+# Build files
+*.vsix
+*.tgz

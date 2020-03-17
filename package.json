@@ -7,9 +7,9 @@
   "publisher": "fortellis",
   "scripts": {
     "build": "babel src -d dist",
-    "vscode:install": "node ./node_modules/vscode/bin/install",
+    "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "node ./node_modules/vscode/bin/test",
-    "release": "npm run build; vsce package --baseImagesUrl https://stash.cdk.com/projects/CEXCHNG/repos/vscode-fortellis-spec-validator"
+    "release": "npm run build; vsce package"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.7",
