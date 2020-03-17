@@ -1,7 +1,14 @@
+# Ignore vscode config files
 .vscode/**
 .vscode-test/**
+# Ignore non-dist code
 test/**
+src/**
+# Ignore config files
 .gitignore
+.gitattributes
+.eslintrc.json
+.babelrc
 jsconfig.json
 vsc-extension-quickstart.md
 .eslintrc.json
