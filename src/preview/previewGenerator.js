@@ -38,11 +38,11 @@ async function generatePreview(document) {
       <body>
         <div>
           <div class="preview-banner">
-            <h1>Fortellis API Documentation Preview</h1>
+            <h1>Fortellis API Details Preview</h1>
             <p>
               This is a preview and is not an exact representation of what will
               be avaliable on{" "}
-              <a href="https://apidocs.fortellis.io">API Docs</a> after spec
+              <a href="https://apidocs.fortellis.io">API Details Page</a> after spec
               publishing.
             </p>
           </div>
