@@ -1,5 +1,5 @@
 const vscode = require("vscode");
-const { lintRaw } = require("@fortellis/spec-validator");
+const { lintRaw, Severity } = require("@fortellis/spec-linter");
 const generatePreview = require("./preview/previewGenerator");
 const generateError = require("./preview/errorGenerator");
 const FortellisSpecValidatorTreeProvider = require("./fortellisSpecValidatorTreeProvider");
@@ -128,7 +128,7 @@ function validateSpec(editor) {
       "oas2-enhanced": true,
       "oas2-fortellis": true
     },
-    severity: 'warn'
+    severity: Severity.warn
   })
     .then(res => {
       const diagnostics = res.map(errItem => {

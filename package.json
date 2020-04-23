@@ -5,6 +5,10 @@
   "version": "0.0.1",
   "main": "./dist/extension",
   "publisher": "fortellis",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Fortellis/vscode-fortellis-spec-tools"
+  },
   "scripts": {
     "build": "babel src -d dist",
     "postinstall": "node ./node_modules/vscode/bin/install",
@@ -22,7 +26,7 @@
     "vscode": "^1.1.6"
   },
   "dependencies": {
-    "@fortellis/spec-validator": "^1.0.7",
+    "@fortellis/spec-linter": "^1.0.0",
     "@stoplight/yaml": "^3.5.0",
     "ajv": "^6.12.0",
     "json-schema-merge-allof": "^0.7.0",
