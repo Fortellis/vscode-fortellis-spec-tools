@@ -1,7 +1,5 @@
 # Fortellis Spec Tools
 
-> Fortellis Spec Tools is currently in _beta_ and under development. Please report any issues found on GitHub following the issue template for _bug_.
-
 ## Using Spec Tools
 
 Fortellis Spec Tools currently exposes two commands to help working with Fortellis API specifications: "Validate" and "Preview".

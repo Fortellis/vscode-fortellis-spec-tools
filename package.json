@@ -2,9 +2,12 @@
   "name": "fortellis-spec-tools",
   "displayName": "Fortellis Spec Tools",
   "description": "Work with fortellis specifications live in your editor.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "./dist/extension",
   "publisher": "fortellis",
+  "icon": "media/logo.png",
+  "license": "MIT",
+  "homepage": "https://fortellis.io",
   "repository": {
     "type": "git",
     "url": "https://github.com/Fortellis/vscode-fortellis-spec-tools"
@@ -37,7 +40,12 @@
     "vscode": "^1.41.0"
   },
   "categories": [
+    "Linters",
     "Other"
+  ],
+  "keywords": [
+    "Fortellis",
+    "API spec"
   ],
   "activationEvents": [
     "onView:fortellis-spec-validator-view",
@@ -92,7 +100,7 @@
       "activitybar": [
         {
           "id": "fortellis-spec-validator",
-          "title": "Fortellis Spec Validation",
+          "title": "Fortellis Spec Tools",
           "icon": "media/fortellis.svg"
         }
       ]
@@ -106,7 +114,7 @@
       ]
     },
     "configuration": {
-      "title": "Fortellis Spec Validator",
+      "title": "Fortellis Spec Tools",
       "properties": {
         "fortellisSpec.validation.onChange": {
           "type": "boolean",
